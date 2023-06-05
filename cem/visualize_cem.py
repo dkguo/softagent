@@ -18,11 +18,14 @@ def cem_make_gif(env, initial_states, action_trajs, configs, save_dir, save_name
         frames.append(env.get_image(img_size, img_size))
         for action in action_trajs[i]:
             _, reward, _, info = env.step(action, record_continuous_video=True, img_size=img_size)
+            print(env.inner_step, reward)
             frames.extend(info['flex_env_recorded_frames'])
         all_frames.append(frames)
     # Convert to T x index x C x H x W for pytorch
     all_frames = np.array(all_frames).transpose([1, 0, 4, 2, 3])
     grid_imgs = [torchvision.utils.make_grid(torch.from_numpy(frame), nrow=5).permute(1, 2, 0).data.cpu().numpy() for frame in all_frames]
+    # print('len_frames', len(grid_imgs))
+
     save_numpy_as_gif(np.array(grid_imgs), osp.join(save_dir, save_name))
 
 
@@ -39,6 +42,7 @@ def get_env(variant_path):
                   'action_repeat': 1,
                   'bit_depth': 8,
                   'image_dim': None,
+                  'max_episode_length': 1,
                   'env_kwargs': vv['env_kwargs']}
     env = env_class(**env_kwargs)
     return env, vv['env_name']
@@ -65,10 +69,11 @@ def generate_video(file_paths):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('exp_dir', type=str,
+    parser.add_argument('dir', type=str,
                         help='path to the snapshot file')
     args = parser.parse_args()
-    generate_video([osp.join(args.exp_dir, subdir, 'cem_traj.pkl') for subdir in os.listdir(args.exp_dir)])
+
+    generate_video([f'{args.dir}/cem_traj.pkl'])
     # file_path = osp.join(args.exp_dir, 'cem_traj.pkl')
     # with open(file_path, 'rb') as f:
     #     traj_dict = pickle.load(f)

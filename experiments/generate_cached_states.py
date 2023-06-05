@@ -1,3 +1,5 @@
+import os
+
 from softgym.registered_env import env_arg_dict
 from softgym.utils.visualization import save_numpy_as_gif
 import numpy as np
@@ -29,24 +31,26 @@ def generate_video(env, env_name):
     grid_imgs = np.array(
         [torchvision.utils.make_grid(frame, nrow=4, padding=2, pad_value=120).permute(1, 2, 0).data.cpu().numpy()
          for frame in all_videos])
+    os.makedirs(SAVE_PATH, exist_ok=True)
     save_numpy_as_gif(grid_imgs, osp.join(SAVE_PATH, env_name + '.gif'))
     print('Video generated and save to {}'.format(osp.join(SAVE_PATH, env_name + '.gif')))
 
 
-def generate_env_state(env_name):
+def generate_env_state(env_name, seed=100):
     kwargs = env_arg_dict[env_name]
     kwargs['headless'] = True
     kwargs['use_cached_states'] = False
-    kwargs['num_variations'] = 1000
+    kwargs['num_variations'] = 10
     kwargs['save_cached_states'] = True
+    kwargs['cached_states_path'] = 'pour_water_init_states_10.pkl'
     # Env wrappter
-    env = Env(env_name, False, 100, 200, 1, 8, 128, kwargs)
+    env = Env(env_name, False, seed, 200, 1, 8, 128, kwargs)
     return env
 
 
 if __name__ == '__main__':
-    env_names = ['ClothFold', 'ClothFlatten', 'ClothDrop', 'ClothFoldCrumpled', 'ClothFoldDrop']
-    env_names = ['ClothFold']
+    # env_names = ['ClothFold', 'ClothFlatten', 'ClothDrop', 'ClothFoldCrumpled', 'ClothFoldDrop']
+    env_names = ['PourWater']
     envs = [generate_env_state(env_name) for env_name in env_names]
 
     for (env, env_name) in zip(envs, env_names):

@@ -30,6 +30,7 @@ cem_plan_horizon = {
     'PassWater': 7,
     'PourWater': 40,
     'PourWaterAmount': 40,
+    'PourWaterSceneGraph': 40,
     'ClothFold': 15,
     'ClothFoldCrumpled': 30,
     'ClothFoldDrop': 30,
@@ -52,6 +53,8 @@ def run_task(vv, log_dir, exp_name):
         vv['population_size'] = vv['population_size'] // vv['plan_horizon']
     vv['num_elites'] = vv['population_size'] // 10
     vv = update_env_kwargs(vv)
+    # vv['env_kwargs']['horizon'] = 150
+    # print(vv)
 
     # Configure logger
     logger.configure(dir=log_dir, exp_name=exp_name)

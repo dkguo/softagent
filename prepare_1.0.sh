@@ -1,5 +1,5 @@
 cd softgym
-. prepare_1.0.sh
+. ./prepare_1.0.sh
 cd ..
 export PYTORCH_JIT=0
 export PYFLEXROOT=${PWD}/softgym/PyFlex

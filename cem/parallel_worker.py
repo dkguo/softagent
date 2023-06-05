@@ -1,6 +1,7 @@
 import multiprocessing as mp
 from multiprocessing import Pool
 import numpy as np
+import torch
 
 env = None
 
@@ -39,9 +40,14 @@ class ParallelRolloutWorker(object):
 
     def cost_function(self, init_state, action_trajs):
         action_trajs = action_trajs.reshape([-1, self.plan_horizon, self.action_dim])
-        splitted_action_trajs = np.array_split(action_trajs, self.num_worker)
-        ret = self.pool.map(get_cost, [(init_state, splitted_action_trajs[i], self.env_class, self.env_kwargs) for i in range(self.num_worker)])
-        flat_costs = [item for sublist in ret for item in sublist]  # ret is indexed first by worker_num then traj_num
+
+        # splitted_action_trajs = np.array_split(action_trajs, self.num_worker)
+        # ret = self.pool.map(get_cost, [(init_state, splitted_action_trajs[i], self.env_class, self.env_kwargs) for i in range(self.num_worker)])
+        # flat_costs = [item for sublist in ret for item in sublist]  # ret is indexed first by worker_num then traj_num
+
+        # not using multiprocessing
+        ret = get_cost((init_state, action_trajs, self.env_class, self.env_kwargs))
+        flat_costs = [item for item in ret]  # ret is indexed first by worker_num then traj_num
         return flat_costs
 
 
