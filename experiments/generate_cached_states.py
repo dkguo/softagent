@@ -40,7 +40,7 @@ def generate_env_state(env_name, seed=100):
     kwargs = env_arg_dict[env_name]
     kwargs['headless'] = True
     kwargs['use_cached_states'] = False
-    kwargs['num_variations'] = 10
+    kwargs['num_variations'] = 1000
     kwargs['save_cached_states'] = True
     kwargs['cached_states_path'] = 'pour_water_init_states_10.pkl'
     # Env wrappter
