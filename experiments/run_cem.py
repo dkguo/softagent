@@ -117,17 +117,17 @@ def run_task(vv, log_dir, exp_name):
             logger.record_tabular('info_' + 'sum_' + info_name, np.sum(transformed_info[info_name][0, :], axis=-1))
         logger.dump_tabular()
 
-    # Dump trajectories
-    traj_dict = {
-        'initial_states': initial_states,
-        'action_trajs': action_trajs,
-        'configs': configs
-    }
-    with open(osp.join(log_dir, 'cem_traj.pkl'), 'wb') as f:
-        pickle.dump(traj_dict, f)
+        # Dump trajectories
+        traj_dict = {
+            'initial_states': initial_states,
+            'action_trajs': action_trajs,
+            'configs': configs
+        }
+        with open(osp.join(log_dir, 'cem_traj.pkl'), 'wb') as f:
+            pickle.dump(traj_dict, f)
 
-    # Dump video
-    cem_make_gif(env_render, initial_states, action_trajs, configs, logger.get_dir(), vv['env_name'] + '.gif')
+        # Dump video
+        cem_make_gif(env_render, initial_states, action_trajs, configs, logger.get_dir(), vv['env_name'] + '.gif')
 
 
 def main():
